@@ -6,7 +6,7 @@ BEGIN
   DataSourceBehavior  = 0  'vbNone
   MTSTransactionMode  = 0  'NotAnMTSObject
 END
-Attribute VB_Name = "cCrossComm"
+Attribute VB_Name = "Class1"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
@@ -71,7 +71,7 @@ Public Enum eItemType
 End Enum
 
 Public Enum IO_TYPE
-    IORestart = -1
+    IoRestart = -1
     IBusReset = 1
     CanReset = 2
     BoschReset = 3
@@ -97,7 +97,6 @@ Private itfSyncSelect As ICKSyncSelect
 Private itfSyncIo As ICKSyncIo
 Private itfAsyncVar As ICKAsyncVar
 Private itfAdviseMessage As ICKAdviseMessage
-Private test As ICKCallbackVar2
     
 Dim m_Parent As Object
 Dim sLocalConnectName As String 'Client-ID
@@ -114,12 +113,9 @@ Implements ICKCallbackVar
 Implements IKCallbackError
 Implements ICKConsumeMessage
 
-
-
 Public Function Init(ByRef oParent As Object) As Boolean
-
-'On Error GoTo Err_Init
-
+On Error GoTo Err_Init
+    
     Debug.Print "--- Init ---"
     If Not (oParent Is Nothing) Then
         Set m_Parent = oParent
@@ -131,7 +127,7 @@ Public Function Init(ByRef oParent As Object) As Boolean
         Init = False
         Exit Function
     End If
-
+    
 Exit_Init:
     Init = True
     m_CrossIsConnected = True
@@ -154,7 +150,6 @@ On Error GoTo Err_ConnectToCross
 
     Set itfSyncvar = Nothing
     Set itfSyncvar = objServiceFactory.GetService("WBC_KrcLib.SyncVar", sLocalConnectName)
-    
     
     Set itfSyncFile = Nothing
     Set itfSyncFile = objServiceFactory.GetService("WBC_KrcLib.SyncFile", sLocalConnectName)
@@ -238,7 +233,7 @@ On Error GoTo Err_SetVar
 
     Debug.Print "--- SetVar ---"
     itfSyncvar.SetVar strVarName, strNewValue
-   
+
 Exit_SetVar:
     SetVar = True
     Exit Function

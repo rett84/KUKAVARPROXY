@@ -9,8 +9,14 @@ Attribute VB_Name = "basMain"
 ' Modified by : Lionel du Peloux (feb. 2019)
 '-----------------------------------------------------------------
 
+'-----------------------------------------------------------------
+' Modified by : L. Rettore (Oct. 2019)
+' Uses CrossCommEXE to connect to KRC1
+'-----------------------------------------------------------------
+
 'dichiarazione oggetto crosscomm
-Public CrossCommands As New cCrossComm
+'Public CrossCommands As New cCrossComm
+Public CrossCommands As Object
 
 'Separatore di valori per comunicazione TCP/IP
 Public Const sSeparatore = "|"
@@ -28,6 +34,23 @@ Public sSerialNO As String
 Public sModelName As String
 
 Public CrossIsConnected As Boolean
+
+Public vValue As Variant
+
+Public Connect_state As Boolean
+
+
+
+Public Sub ConnectRob()
+'Create object for the robot
+
+Set CrossCommands = CreateObject("CrossCommEXE.CrossCommand")
+CrossCommands.Init (frmMain)
+CrossCommands.ConnectToCross vValue
+' Connected = True
+' StrBofVer = GetBOFVer
+
+End Sub
 Public Sub ExitCrossComm()
     'Unload Cross-Communication
     If Not (CrossCommands Is Nothing) Then
@@ -51,17 +74,25 @@ On Error GoTo Fehler
     Dim bRetVal As Boolean
     bRetVal = False
     
-    If Not CrossCommands.CrossIsConnected Then
+    
+    
+
+    If Not Connect_state Then
+        ConnectRob
+    End If
+    
+   If Not CrossCommands.CrossIsConnected Then
         If CrossCommands.Init(frmMain) Then
             Connect = CrossCommands.ConnectToCross("KUKAVARPROXY", nMode)
             ShowVar "$KR_SERIALNO", sSerialNO
             ShowVar "$MODEL_NAME[]", sModelName
-            
+             
         Else
             Connect = False
         End If
     Else
         Connect = True
+        Connect_state = True
     End If
     
 On Error GoTo 0
